@@ -19,10 +19,10 @@ type dias = 0..31;
      rango2 = 1..99;
      rango3 = 0..dimF;
      venta = record
-                dia: dias;
-				codigoP: rango1;
-				cantidad: rango2;
-			 end;
+        dia: dias;
+        codigoP: rango1;
+        cantidad: rango2;
+        end;
 	 vector = array [1..dimF] of venta;
 	 elemento = record
 	              codigoP: rango1;
@@ -34,7 +34,7 @@ type dias = 0..31;
 	          sig: lista;
 	        end;
 
-procedure AlmacenarInformacion (var v: vector; var dimL: rango3);
+procedure AlmacenarInformacion (var v: vector; var dimL: rango3); // Llena el primer vectores con los datos
   
   procedure LeerVenta (var v: venta);
   begin
@@ -56,7 +56,7 @@ var unaVenta: venta;
 begin
     dimL := 0;
     LeerVenta (unaVenta);
-    while (unaVenta.dia <> 0)  and ( dimL < dimF ) do 
+    while (unaVenta.dia <> 0)  and ( dimL < dimF ) do ////Si la primer venta genera un cero como dia, no entra nunca en el bucle.??
     begin
        dimL := dimL + 1;
        v[dimL]:= unaVenta;
@@ -64,7 +64,7 @@ begin
     end;
 end;
 
-procedure ImprimirVector (v: vector; dimL: rango3);
+procedure ImprimirVector (v: vector; dimL: rango3); /// Imprime todo los valores en un vector
 var
    i: integer;
 begin
@@ -94,7 +94,7 @@ begin
      writeln;
 End;
 
-procedure Ordenar (var v: vector; dimL: rango3);
+procedure Ordenar (var v: vector; dimL: rango3); // Ordena el vector por codigo de producto
 
 var i, j, pos: rango3; item: venta;	
 		
@@ -113,23 +113,28 @@ begin
 end;
 
 procedure Eliminar (var v: vector; var dimL: rango3; valorInferior, valorSuperior: rango1);
-
+//e. Un módulo que elimine, del vector ordenado, las ventas con código de producto entre dos valores que se ingresan como parámetros. 
   function BuscarPosicion (v: vector; dimL: rango3; elemABuscar: rango1): rango3;
-  var pos: rango3;
+  var 
+    pos: rango3;
   begin
     pos:= 1;
     while (pos <= dimL) and (elemABuscar > v[pos].codigoP) do
        pos:= pos + 1;
-    if (pos > dimL) then BuscarPosicion:= 0
-                    else BuscarPosicion:= pos;
+    if (pos > dimL) then
+        BuscarPosicion:= 0
+      else 
+        BuscarPosicion:= pos; //devuelve la posicion del primer elemento del vector con el valor de codigo igual al valorInferior
   end;
   
   function BuscarPosicionDesde (v: vector; dimL, pos : integer; elemABuscar: rango1): rango3;
   begin
-    while (pos <= dimL) and (elemABuscar >= v[pos].codigoP) do
-       pos:= pos + 1;
-    if (pos > dimL) then BuscarPosicionDesde:= dimL
-                    else BuscarPosicionDesde:= pos - 1;
+    while (pos <= dimL) and (elemABuscar >= v[pos].codigoP) do // empieza a buscar a partir de pos ,que tiene la posicion del valor inferior
+      pos:= pos + 1;                                           // como 
+      if (pos > dimL) then                                     // si la pos sale del vector
+        BuscarPosicionDesde:= dimL                             // devuelve la ultima posicion
+      else 
+        BuscarPosicionDesde:= pos - 1;                         //
   end;
 
 var posInferior, posSuperior, salto, i: rango3; 
@@ -139,8 +144,12 @@ Begin
   then begin
          posSuperior:= BuscarPosicionDesde (v, dimL, posInferior, valorSuperior);
          
-         {Escribir el código correspondiente para hacer el corrimiento y disminuir la dimensión lógica}
-         
+          {Escribir el código correspondiente para hacer el corrimiento y disminuir la dimensión lógica}
+          salto:=posSuperior - posInferior + 1;
+          for i:=posSuperior +1 to dimL do 
+            v[i-salto]:=v[i];
+
+          dimL:=dimL-salto;
        end;
 end;
 
@@ -149,6 +158,13 @@ procedure GenerarLista (v: vector; dimL: rango3; var L: lista);
   procedure AgregarAtras (var L, ult: lista; elem: elemento);
   begin
     { Completar }
+    new(ult);
+    ult^.sig:=nil;
+    ult^.dato:=elem;
+    while (L<>nil) and (L^.sig<>nil) do begin
+      L:=L^.sig;
+    end;
+    L^.sig:=ult;
   end;
   
     
@@ -170,7 +186,11 @@ end;
 
 procedure ImprimirLista (L: lista);
 begin
- { Completar }
+  { Completar }
+  while L<>nil do begin
+    writeln('Codigo:',L^.dato.codigoP,'Cantidad:',L^.dato.cantTotal);
+    L:=L^.sig;
+    end;
 end;
 
 var v: vector;
@@ -191,7 +211,7 @@ Begin
                        writeln;
                        Ordenar (v, dimL);
                        ImprimirVector (v, dimL);
-                       {write ('Ingrese valor inferior: ');
+                       write ('Ingrese valor inferior: ');// comentario original empezaba acá
                        readln (valorInferior);
                        write ('Ingrese valor superior: ');
                        readln (valorSuperior);
@@ -210,7 +230,7 @@ Begin
                                                                 writeln;
                                                                 ImprimirLista (L);
                                                               end;
-                                          end;}
+                                          end;
                       end;
                        
 end.

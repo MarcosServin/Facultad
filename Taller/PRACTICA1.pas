@@ -28,7 +28,7 @@
 // posicion que se debe comparar
 // cuantos elementos ya estan ordenados
 
-// program ordenar;
+// program ordenar_insercion;
 
 // CONST 
 //     dimF=...
@@ -40,6 +40,25 @@
 // var
 //     a:Tvector;
 //     dimL:integer;
+procedure insercion(vec:vector;dimL:rangoL);
+var
+    i:integer;
+    j:integer;
+    indice:integer;
+begin
+    for i :=2 to dimL-1 do
+    begin
+        indice:=vec[i];
+        j:=i;
+        while ((j>1)and (vec[j-1]>indice)) do
+            begin
+                vec[j]:=vec[j-1];
+                j:=j-1;
+            end;
+        vec[j]:=indice;
+    end;
+end;
+
 
 // begin
 //     cargarector(a,dimL);
