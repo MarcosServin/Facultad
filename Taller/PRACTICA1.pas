@@ -1,6 +1,6 @@
 // metodo de ordenacion :seleccion, tiempo n^2
 // necesito saber
-// dimnsion logica del arreglo
+// dimnsion logica del vector
 // posicion donde va el  elemento ordenado
 // posicion desde la que vamos a buscar el minimo
 // posicion del elementoo minimo
@@ -13,8 +13,7 @@
 //     for i:1 to dimL-1 do begin
 //         pos:=i;
 //         for j:=i+1 to dimL do
-//             if v[j]<v[pos]then pos:=j;
-        
+//             if v[j]<v[pos]then pos:=j;       
 //         //intercambia v[i] y v[p]
 //         item:=v[pos];
 //         v[pos]:=v[i];
