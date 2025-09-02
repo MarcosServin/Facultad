@@ -1,13 +1,13 @@
-{1.- Implementar un programa que invoque a los siguientes módulos.
-a. Un módulo recursivo que retorne un vector de a lo sumo 15 números enteros “random” mayores a 10 y menores a 155 (incluidos ambos). La carga finaliza con 
+{1.- Implementar un programa que invoque a los siguientes mï¿½dulos.
+a. Un mï¿½dulo recursivo que retorne un vector de a lo sumo 15 nï¿½meros enteros ï¿½randomï¿½ mayores a 10 y menores a 155 (incluidos ambos). La carga finaliza con 
 el valor 20.
-b. Un módulo no recursivo que reciba el vector generado en a) e imprima el contenido del vector.
-c. Un módulo recursivo que reciba el vector generado en a) e imprima el contenido del vector.
-d. Un módulo recursivo que reciba el vector generado en a) y devuelva la suma de los valores pares contenidos en el vector.
-e. Un módulo recursivo que reciba el vector generado en a) y devuelva el máximo valor del vector.
-f. Un módulo recursivo que reciba el vector generado en a) y un valor y devuelva verdadero si dicho valor se encuentra en el vector o falso en caso contrario.
-g. Un módulo que reciba el vector generado en a) e imprima, para cada número contenido en el vector, sus dígitos en el orden en que aparecen en el número. 
-Debe implementarse un módulo recursivo que reciba el número e imprima lo pedido. Ejemplo si se lee el valor 142, se debe imprimir 1  4  2
+b. Un mï¿½dulo no recursivo que reciba el vector generado en a) e imprima el contenido del vector.
+c. Un mï¿½dulo recursivo que reciba el vector generado en a) e imprima el contenido del vector.
+d. Un mï¿½dulo recursivo que reciba el vector generado en a) y devuelva la suma de los valores pares contenidos en el vector.
+e. Un mï¿½dulo recursivo que reciba el vector generado en a) y devuelva el mï¿½ximo valor del vector.
+f. Un mï¿½dulo recursivo que reciba el vector generado en a) y un valor y devuelva verdadero si dicho valor se encuentra en el vector o falso en caso contrario.
+g. Un mï¿½dulo que reciba el vector generado en a) e imprima, para cada nï¿½mero contenido en el vector, sus dï¿½gitos en el orden en que aparecen en el nï¿½mero. 
+Debe implementarse un mï¿½dulo recursivo que reciba el nï¿½mero e imprima lo pedido. Ejemplo si se lee el valor 142, se debe imprimir 1  4  2
 }
 
 Program Clase2MI;
@@ -56,7 +56,13 @@ End;
 
 procedure ImprimirVectorRecursivo (v: vector; dimL: integer);
 begin    
-     {-- Completar --}     
+     {-- Completar --}
+    if dimL<>0 then
+      begin 
+        writeln(v[dimL]);// Desde el principio;Del ultimo al primer
+        ImprimirVectorRecursivo(v,dimL-1);
+        //writeln(v[dimL]);// Imprime recien en el caso base;del primero al ultimo
+      end;
 end; 
     
 function Sumar (v: vector; dimL: integer): integer; 
@@ -77,17 +83,50 @@ end;
 
 function  ObtenerMaximo (v: vector; dimL: integer): integer;
 begin
-  {-- Completar --} 
+  if (dimL=1) then
+    begin
+      ObtenerMaximo:=v[dimL];
+    end;
+  else
+  begin
+    if v[dimL]>ObtenerMaximo(v,dimL-1) then
+      begin
+        ObtenerMaximo:=v[dimL];
+      end
+    else
+      begin
+        ObtenerMaximo:=ObtenerMaximo(v,dimL-1);
+      end;
+  end;
 end;     
      
 function  BuscarValor (v: vector; dimL, valor: integer): boolean;
 begin
-  {-- Completar --} 
+    {-- Completar --}
+    if dimL=0 then
+      begin
+        BuscarValor:=False; // Fin del vector;
+      end
+    else if v[dimL]=valor then// Vector continua
+      begin
+        BuscarValor:=True;//EncontrÃ³ el valor en el vector;
+      end
+      else then
+        begin
+          BuscarValor:=BuscarValor(v,dimL-1,valor);// Sigue buscando;
+        end;
 end; 
 
 procedure ImprimirDigitos (v: vector; dimL: integer);
 begin    
-     {-- Completar --}     
+
+    // imprimirDigitos(v,dimL-1);// Avanza en el vector al disminuir dimL
+    // if v[dimL]>9 
+    //    write(v[diml])
+    // else
+    //    imprimirDigitos(v,dimL);// sigue trabajando el mismo numero
+    //    
+
 end; 
 
 var dimL, suma, maximo, valor: integer; 
