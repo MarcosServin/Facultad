@@ -14,7 +14,7 @@ end;
 var
     num:integer;
 begin
-num:=-1
+num:=-1;
     while num<>0 do
         begin
             entBin_rec();
