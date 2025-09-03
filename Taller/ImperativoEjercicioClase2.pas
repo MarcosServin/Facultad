@@ -59,9 +59,9 @@ begin
      {-- Completar --}
     if dimL<>0 then
       begin 
-        writeln(v[dimL]);// Desde el principio;Del ultimo al primer
+        //writeln(v[dimL]);// Desde el principio ;Del ultimo al primer
         ImprimirVectorRecursivo(v,dimL-1);
-        //writeln(v[dimL]);// Imprime recien en el caso base;del primero al ultimo
+        writeln(v[dimL]);// Imprime al final ;del primero al ultimo
       end;
 end; 
     
