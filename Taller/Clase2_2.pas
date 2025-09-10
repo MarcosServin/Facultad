@@ -49,7 +49,7 @@ procedure impLisInv_rec(l:lista);
 begin
     if l<>nil then
         begin
-            impLis_rec(l^.sig);
+            impLisInv_rec(l^.sig);
             writeln(l^.dato);
         end;
 end;
