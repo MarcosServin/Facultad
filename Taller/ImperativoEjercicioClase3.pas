@@ -82,7 +82,7 @@ procedure InformarSociosOrdenCreciente (a: arbol);
   
   procedure InformarDatosSociosOrdenCreciente (a: arbol);
   begin
-    if ((a <> nil) then begin 
+    if (a <> nil) then begin 
 		InformarDatosSociosOrdenCreciente (a^.HI);
 		writeln ('Numero: ', a^.dato.numero, ' Nombre: ', a^.dato.nombre, ' Edad: ', a^.dato.edad);
 		InformarDatosSociosOrdenCreciente (a^.HD);
@@ -177,5 +177,5 @@ Begin
   { InformarExistenciaNombreSocio (a); COMPLETAR
     InformarCantidadSocios (a); COMPLETAR
     InformarPromedioDeEdad (a); COMPLETAR
-  }   
+  } 
 End.
