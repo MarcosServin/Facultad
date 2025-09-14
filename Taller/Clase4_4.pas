@@ -41,8 +41,8 @@ type
 procedure modulo_arboles(var arbol1: t_arbol1; var arbol2: t_arbol2);
     procedure dev_prestamo(var elem: t_prestamo);
     begin
-        elem.isbn := random(5000);
-        elem.num_socio := (1000);
+        elem.isbn := random(100);
+        elem.num_socio := random(1000);
         elem.fecha.dia := random(31) + 1;
         elem.fecha.mes := random(12) + 1;
         elem.cant := random(50);
@@ -123,20 +123,74 @@ begin
     end;
 end;
 
-procedure mayor_isbn(arbol:t_arbol);
-    begin
+function mayor_isbn(arbol:t_arbol1):integer;
+var
+    max_hd:integer;
+begin
+
+    if arbol=nil then begin
+        mayor_isbn:=0;
+        end
+    else begin
+        max_hd:=mayor_isbn(arbol^.hd);
+        if arbol^.isbn<max_hd then begin
+            mayor_isbn:=max_hd;
+        end
+        else begin
+            mayor_isbn:=arbol^.isbn;
+        end
     end;
+end;
 
+function menor_isbn(arbol:t_arbol2):integer;
+var
+    min_hi:integer;
+begin
 
+    if arbol=nil then begin
+        menor_isbn:=5000;
+        end
+    else begin
+        min_hi:=menor_isbn(arbol^.hi);
+        if arbol^.isbn>min_hi then begin
+            menor_isbn:=min_hi;
+        end
+        else begin
+            menor_isbn:=arbol^.isbn;
+        end
+    end;
+end;
+
+procedure imp_arbol(arbol:t_arbol1);
+
+begin
+	if arbol<>nil then begin
+		imp_arbol(arbol^.hi);
+		if arbol^.isbn >9 then begin
+			writeln('ISBN: ',arbol^.isbn,'	|Nro de Socio:',arbol^.dato.num_socio,'	|Fecha: ',arbol^.dato.fecha.dia,'/',arbol^.dato.fecha.mes,'	|Cantidad: ',arbol^.dato.cant);
+			end
+		else	begin
+			writeln('ISBN: ',arbol^.isbn,'		|Nro de Socio:',arbol^.dato.num_socio,'	|Fecha: ',arbol^.dato.fecha.dia,'/',arbol^.dato.fecha.mes,'	|Cantidad: ',arbol^.dato.cant);
+		
+			end;
+		imp_arbol(arbol^.hd);
+	
+	end;
+end;
 var
     arbol1: t_arbol1;
     arbol2: t_arbol2;
-    mayor: integer;
+    num_impr: integer;
 begin
+	Randomize;
     arbol1 := nil;
     arbol2 := nil;
     modulo_arboles(arbol1, arbol2);
-    mayor:=mayor_isbn(arbol1);
-    //imp_arbol();
+    imp_arbol(arbol1);
+    num_impr:= mayor_isbn(arbol1);
+    writeln('Mayor ISBN: ',num_impr);
+    num_impr:=menor_isbn(arbol2);
+    writeln('Menor ISBN: ',num_impr);
+
 
 end.
