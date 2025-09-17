@@ -50,7 +50,7 @@ type
 procedure modulo_arboles(var arbol1:t_arbol1;var arbol2:t_arbol2);
     procedure dev_prestamo(var elem:t_prestamo);
     begin
-        elem.isbn:=random(50);
+        elem.isbn:=random(100);
         elem.num_socio:=random(100)+1;
         elem.fecha.dia:=random(31)+1;
         elem.fecha.mes:=random(12)+1;
@@ -167,24 +167,47 @@ procedure imp_arbol(arbol:t_arbol1);
 begin
 	if arbol<>nil then begin
 		imp_arbol(arbol^.hi);
+        writeln();
 		if arbol^.isbn >9 then begin
-			writeln('ISBN: ',arbol^.isbn,'	|Nro de Socio:',arbol^.dato.num_socio,'	|Fecha: ',arbol^.dato.fecha.dia,'/',arbol^.dato.fecha.mes,'	|Cantidad: ',arbol^.dato.cant);
+			write('ISBN: ',arbol^.isbn,'    | Nro de Socio:',arbol^.dato.num_socio);
 			end
-		else	begin
-			writeln('ISBN: ',arbol^.isbn,'		|Nro de Socio:',arbol^.dato.num_socio,'	|Fecha: ',arbol^.dato.fecha.dia,'/',arbol^.dato.fecha.mes,'	|Cantidad: ',arbol^.dato.cant);
-		
-			end;
+		else begin
+			write('ISBN: ',arbol^.isbn,'     | Nro de Socio:',arbol^.dato.num_socio);		
+        end;
+        if arbol^.dato.num_socio<10 then begin
+            write('      | Fecha: ',arbol^.dato.fecha.dia,'/',arbol^.dato.fecha.mes);
+        end
+        else begin
+            write('     | Fecha: ',arbol^.dato.fecha.dia,'/',arbol^.dato.fecha.mes);
+
+        end;
 		imp_arbol(arbol^.hd);
 	
 	end;
+
 end;
 
 procedure imp_arbol2(arbol:t_arbol2);
-
+var
+    aux:l_prestamos;
 begin
 	if arbol<>nil then begin
 		imp_arbol2(arbol^.hi);
-        writeln(arbol^.isbn);
+        writeln();
+        write('ISBN: ',arbol^.isbn);
+        aux:=arbol^.lista;
+        while aux<>nil do begin
+            writeln();
+            write('       |Numero de socio: ',aux^.dato.num_socio);
+            if aux^.dato.num_socio>9 then begin
+                write('     |Fecha: ',aux^.dato.fecha.dia,'/',aux^.dato.fecha.mes);
+            end
+            else begin
+                write('      |Fecha: ',aux^.dato.fecha.dia,'/',aux^.dato.fecha.mes);
+            end;
+            writeln();
+            aux:=aux^.sig;
+        end;
 		imp_arbol2(arbol^.hd);
 	end;
 end;
@@ -287,7 +310,12 @@ procedure dev_nue_arbol2(viejo:t_arbol2;var nuevo:t_nuearbol);
         if nuevo=nil then begin
             new(nuevo);
             nuevo^.isbn:=viejo^.isbn;
-            nuevo^.cantidad:=1;
+            aux:=viejo^.lista;
+            nuevo^.cantidad:=0;
+            while aux<>nil do begin
+                nuevo^.cantidad:=1+nuevo^.cantidad;
+                aux:=aux^.sig;
+            end;
             nuevo^.hi:=nil;
             nuevo^.hd:=nil;
         end
@@ -319,19 +347,20 @@ begin
 
 end;
 function recu_prest_entre(bajo,alto:integer;arbol:t_nuearbol):integer;
-var 
-    cuantos:integer;
 begin
     if arbol=nil then begin
         recu_prest_entre:=0;
     end
-    else begin
-        if arbol^.isbn>=bajo then begin
-            recu_prest_entre:=arbol^.cantidad+recu_prest_entre(bajo,alto,arbol^.hd);
-        end
-        else if arbol^.isbn<=alto then begin
-            recu_prest_entre:=arbol^.cantidad+recu_prest_entre(bajo,alto,arbol^.hi);
-        end
+    else begin               
+        if  (bajo<=arbol^.isbn) and (arbol^.isbn<=alto) then begin
+            recu_prest_entre:=arbol^.cantidad+recu_prest_entre(bajo,alto,arbol^.hi)+recu_prest_entre(bajo,alto,arbol^.hd);
+            end
+        else if arbol^.isbn<bajo then begin
+                recu_prest_entre:=recu_prest_entre(bajo,alto,arbol^.hd);
+            end
+            else if arbol^.isbn>alto then begin
+                recu_prest_entre:=recu_prest_entre(bajo,alto,arbol^.hi);
+            end
     end;
 end;
 
@@ -352,6 +381,7 @@ begin
     modulo_arboles(arbol1,arbol2);
     writeln('Arbol nro 1:');
     imp_arbol(arbol1);
+    writeln();
     writeln('Arbol nro 2:');
     imp_arbol2(arbol2);
     num_impr:= mayor_isbn(arbol1);
@@ -366,9 +396,12 @@ begin
     writeln(num_impr);
     nue_arbol:=nil;
     dev_nue_arbol(arbol1,nue_arbol);
+    writeln('Nuevo Arbol nro 1: ');
     imp_nuevoArbol(nue_arbol);
     nue_arbol2:=nil;
     dev_nue_arbol2(arbol2,nue_arbol2);
+    writeln();
+    writeln('Nuevo Arbol nro 2: ');
     imp_nuevoArbol(nue_arbol2);
     writeln('Buscar prestamos desde ISBM : ');
     readln(bajo);
