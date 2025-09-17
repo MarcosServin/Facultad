@@ -26,8 +26,8 @@ type
     nodo_arbol=record
         dni_cliente:integer;
         lista:l_ventas;
-        hi:t_arbol;
-        hd:t_arbol;
+        izq:t_arbol;
+        der:t_arbol;
         end;
 
     v_ventasSucursal=array[r_numSucursal] of integer;
@@ -50,7 +50,7 @@ procedure armar_estructuras(var arbol:t_arbol;var vector:v_ventasSucursal);
             //writeln(venta.cod_factura);
             //writeln('Ingrese el Numero de la sucursal: ');
             //readln(venta.num_sucursal);
-            venta.num_sucursal:=random(12)+1;
+            venta.num_sucursal:=random(dimF)+1;
             //writeln(venta.num_sucursal);
             //writeln('Ingrese el monto: ');
             //readln(venta.monto);
@@ -73,14 +73,14 @@ procedure armar_estructuras(var arbol:t_arbol;var vector:v_ventasSucursal);
             nue_lis^.dato.monto:=venta.monto;
             nue_lis^.sig:=nil;
             nue^.lista:=nue_lis;
-            nue^.hi:=nil;
-            nue^.hd :=nil;
+            nue^.izq:=nil;
+            nue^.der :=nil;
             arbol:=nue;
             end
         else begin
             if arbol^.dni_cliente=venta.dni_cliente then begin
                 l_aux:=arbol^.lista;
-                while l_aux^.sig<>nil do begin //todos los nodos inicializados tienen una lista,siempre entra el while por lo menos una vez
+                while l_aux^.sig<>nil do begin
                     l_aux:=l_aux^.sig;
                     end;
                 new(nue_lis);
@@ -91,10 +91,10 @@ procedure armar_estructuras(var arbol:t_arbol;var vector:v_ventasSucursal);
             end
             else begin
                 if arbol^.dni_cliente > venta.dni_cliente then begin
-                    insertar_arbol(arbol^.hi,venta);
+                    insertar_arbol(arbol^.izq,venta);
                 end
                 else begin
-                    insertar_arbol(arbol^.hd,venta);
+                    insertar_arbol(arbol^.der,venta);
                 end;
             end;
         end;
@@ -103,7 +103,7 @@ procedure armar_estructuras(var arbol:t_arbol;var vector:v_ventasSucursal);
     var
         i:integer;
     begin
-        for i:=1 to 12 do begin
+        for i:=1 to dimF do begin
             vector[i]:=0;
         end;
     end;
@@ -123,7 +123,7 @@ begin
         leer_venta(venta);
     end;
 end;
-function cant_facturas(arbol:t_arbol;cliente:integer;piso:integer):integer;
+function cant_facturas(arbol:t_arbol;cliente:integer;piso:real):integer;
 var
     cant:integer;
     aux:l_ventas;
@@ -140,12 +140,14 @@ begin
             end;
             cant_facturas:=cant;
         end
-        else if arbol^.dni_cliente<cliente then begin
-                cant_facturas:=cant_facturas(arbol^.hd,cliente,piso);
+        else  begin
+            if arbol^.dni_cliente<cliente then begin
+                cant_facturas:=cant_facturas(arbol^.der,cliente,piso);
             end
             else begin
-                cant_facturas:=cant_facturas(arbol^.hi,cliente,piso);
+                cant_facturas:=cant_facturas(arbol^.izq,cliente,piso);
             end;
+        end
     end
     else begin
         cant_facturas:=0;
@@ -156,35 +158,44 @@ var
     aux:l_ventas;
 begin
     if arbol<>nil then begin
-        imprimir_arbol(arbol^.hi);
+        imprimir_arbol(arbol^.izq);
         aux:=arbol^.lista;
         writeln();
         write('Dni del Cliente : ',arbol^.dni_cliente);
         writeln();
         while aux<>nil do begin
-            write('     | Codigo : ',aux^.dato.cod_factura,'    | Monto : ',aux^.dato.monto:10:2,'    ');
+            write('     | Codigo : ',aux^.dato.cod_factura,'    | Monto : ',aux^.dato.monto:10:2,'----');
             writeln();
             aux:=aux^.sig;
         end;
-        imprimir_arbol(arbol^.hd);
+        imprimir_arbol(arbol^.der);
     end;
 
 end;
 function cant_ventas(vector:v_ventasSucursal;i:integer):integer;
- 
+var
+    vector_max:r_numSucursal;
 begin
-    if i=dimF then begin
-        cant_ventas:=vector[i];
+    if i=1 then begin //caso base
+        cant_ventas:=i;
     end
     else begin
-        if vector[i]>cant_ventas(vector,i-1) then begin;
-            cant_ventas:=vector[i];
+        if i>1 then begin //i = 0 no entra
+            vector_max:=cant_ventas(vector,i-1);
+            if vector[i]>=vector[vector_max] then begin
+                cant_ventas:=i;
+            end
+            else begin
+                cant_ventas:=vector_max;
+            end
         end
-        else begin
-            cant_ventas:=cant_ventas(vector,i-1);
-        end;
     end;
 end;
+
+
+
+
+
 procedure imprimir_vector(vector:v_ventasSucursal);
 var
     i:integer;
@@ -197,10 +208,10 @@ var
     estr_arbol:t_arbol;
     estr_vector:v_ventasSucursal;
     cliente:integer;
-    piso:integer;
+    piso:real;
     cantidad_mayor:integer;
-    i:r_numSucursal;
-    sucursal_mayor:r_numSucursal;
+    i:integer;
+    sucursal_mayor:integer;
 begin
     Randomize;
     armar_estructuras(estr_arbol,estr_vector);
